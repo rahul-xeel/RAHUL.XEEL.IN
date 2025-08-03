@@ -1,0 +1,2655 @@
+ <?php
+
+// ################################################################################################################################################################################################ 
+// ################################################################################## STORING VISITORS DETAILS   ################################################################################## 
+// ################################################################################################################################################################################################ 
+
+
+
+
+//CONNECTION .PHP START
+ error_reporting(0);
+
+ $servername = "sql210.byetcluster.com";
+  $username = "if0_37209601";
+ $password = "JsIkKj5FT3APKA";
+ $dbname = "if0_37209601_RAHULXEEL_DB";       
+
+ $conn = mysqli_connect($servername,$username,$password,$dbname);
+
+ if($conn)
+ {
+//  echo "Connection ok"; 
+
+ }
+ else
+ {   
+	// ECHO "FAILD";                                                                                               
+ }
+
+
+$date = date("d/m/y");
+
+date_default_timezone_set("Asia/Kolkata"); 
+$time = date("h:i A");
+
+//######################################  IP ######################################################################## //
+
+function getVisitorIP() {
+    $headers = [
+        'HTTP_CF_CONNECTING_IP',      // Cloudflare
+        'HTTP_X_FORWARDED_FOR',       // Proxies (comma separated IPs)
+        'HTTP_X_REAL_IP',             // Some proxies
+        'HTTP_CLIENT_IP',             // Shared internet IP
+        'REMOTE_ADDR'                 // Fallback
+    ];
+
+    foreach ($headers as $header) {
+        if (!empty($_SERVER[$header])) {
+            // In case of multiple IPs (like in X-Forwarded-For), take the first valid one
+            $ips = explode(',', $_SERVER[$header]);
+            foreach ($ips as $ip) {
+                $ip = trim($ip);
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    return $ip;
+                }
+            }
+        }
+    }
+    return 'IP not found';
+}
+
+$visitor_ip = getVisitorIP();
+
+
+
+//######################################  BROWSER ######################################################################## //
+
+
+$user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+if (strpos($user_agent, 'Chrome') !== false) {
+    $browser = "Google Chrome";
+} elseif (strpos($user_agent, 'Firefox') !== false) {
+    $browser = "Mozilla Firefox";
+} elseif (strpos($user_agent, 'Safari') !== false && strpos($user_agent, 'Chrome') === false) {
+    $browser = "Safari";
+} elseif (strpos($user_agent, 'MSIE') !== false || strpos($user_agent, 'Trident') !== false) {
+    $browser = "Internet Explorer";
+} else {
+    $browser = "Unknown";
+}
+
+
+//######################################  ISP ######################################################################## //
+
+$ip = $visitor_ip;
+
+$isp = "Unknown ISP";
+$city = "Unknown City";
+$region = "Unknown Region";
+$country = "Unknown Country";
+
+
+$url = "https://ipinfo.io/$ip/json";
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+$response = curl_exec($ch);
+$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($httpcode == 200 && $response) {
+    $data = json_decode($response, true);
+
+    // ISP
+    if (isset($data['org'])) {
+        $parts = explode(' ', $data['org'], 2);
+        $isp = count($parts) === 2 ? $parts[1] : $data['org'];
+    }
+
+    // Location details
+    if (isset($data['city'])) $city = $data['city'];
+    if (isset($data['region'])) $region = $data['region'];
+    if (isset($data['country'])) $country = $data['country'];
+
+
+}
+
+
+
+//######################################  MACHINE ######################################################################## //
+
+
+require_once 'Mobile_Detect.php';  // Ensure this path is correct
+
+$detect = new Mobile_Detect();
+
+if ($detect->isTablet()) {
+    $deviceType = "Tablet";
+} elseif ($detect->isMobile()) {
+    $deviceType = "Mobile";
+} else {
+    $deviceType = "Desktop";
+}
+
+
+
+
+$abc = "INSERT INTO visitors_data(ip,date,time,city,region,country,browser,isp,machine) VALUES ('$visitor_ip','$date','$time','$city','$region','$country','$browser','$isp','$deviceType')";
+
+
+if ($conn->query($abc) === TRUE) {
+
+//  echo '<script>alert("Information record  successfully !")</script>';
+
+}
+
+
+$total_visitors = "SELECT COUNT(ip) AS total FROM visitors_data";
+$result = $conn->query($total_visitors);
+
+if ($result && $row = $result->fetch_assoc()) {
+    $count = $row['total'];
+} 
+
+
+
+
+// ############################################  MAILING VISITORS DETAILS   ############################################################# 
+
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+ // Send OTP email
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'rahulpapakamailid1@gmail.com';
+                $mail->Password = 'vmtijdflylcwewpx'; 
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                $mail->setFrom('rahul@xeel.in', 'Rahulxeel');
+                $mail->addAddress('rahulxeel@gmail.com');
+
+                $mail->isHTML(true);
+                $mail->Subject = 'visitor at rahul.xeel.in';
+                $mail->Body    = "<h2>Someone visited RAHUL.XEEL.IN <h2>
+                                  <br>ip          : <b>$visitor_ip</b>
+                                  <br>date        : <b>$date</b>
+                                  <br>time        : <b>$time</b>
+                                  <br>city        : <b>$city</b>
+                                  <br>region      : <b>$region</b>
+                                  <br>browser     : <b>$browser</b>
+                                  <br>isp         : <b>$isp</b>
+                                  <br>deviceType  : <b>$deviceType</b>";
+
+                // $mail->send();
+
+                if ($mail->send()) {
+                                      // header('Location: verify_otp.php?email=' . urlencode($email));
+                                     
+                                   }
+
+                 else              {
+                                        $error = "Mailer Error: " . $mail->ErrorInfo;
+                                    }
+
+            } 
+            
+            
+            catch (Exception $e) 
+            {
+                $error = "Failed to send OTP. Mailer Error: {$mail->ErrorInfo}";
+            }
+
+
+
+?>
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahulxeel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="icon" type="image/x-icon" href="rahul_pic-modified.png">
+      <meta name="google-site-verification" content="MYDynxZ31OMY7B-V-W3xSHf3tHCggw6eBtjrzyPpbzE" />
+
+      <script>
+          
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener("keydown", function(e) {
+    if (
+        (e.ctrlKey && e.key.toLowerCase() === 'u') || 
+        (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') || 
+        (e.key === 'F12') 
+    ) {
+        e.preventDefault();
+    }
+});
+</script>
+
+
+
+
+    <style>
+        *{
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+body
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+
+
+
+/* ################################################################################################################################################################################################ */
+/* ################################################################################## FOR DESKTOP VIEWING   ####################################################################################### */
+/* ################################################################################################################################################################################################ */
+
+
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   A   ################################ */
+/* ######################################################################################### */
+
+
+#A {
+    width: 100%;
+    height: 12vh;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    position: fixed;
+    
+}
+
+
+#A_1
+{
+    width: 85%;
+    height: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 5%;
+    padding-left: 5vw;
+}
+
+
+#A_1 :hover
+{
+    color: black;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: 0.4s;
+}
+
+.A_1_a
+{
+    width: auto;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 0px solid red;
+    color: white;
+    font-size: 1.1vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    padding: 0.5%;
+}
+
+
+
+#A_2
+{
+    width: 15%;
+    height: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4%;
+    color: white;
+    font-size: 2vw;
+}
+
+#A_2_a
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#A_2_a:hover
+{
+    rotate: 90deg;
+    transition: 0.5s;
+}
+
+#A_2_b
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   B   ################################ */
+/* ######################################################################################### */
+
+#B
+{
+    width: 100%;
+    height: 88vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10vh;
+    scroll-margin-top: 15vh;
+}
+
+#B_container
+{
+    height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#B_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+
+
+#B_container_A
+{
+    height: 100%;
+    width: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+}
+
+
+#B_container_A img
+{
+    height: 90%;
+    width: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+}
+
+#B_container_B
+{
+    height: 90%;
+    width: 65%;
+    outline: 0px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+}
+
+#B_container_B_1
+{
+    height: 24%;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4vw;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+#B_container_B_2
+{
+    height: 12%;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.2vw;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+
+#B_container_B_3
+{
+    height: 12%;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 1.6vw;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#B_container_B_3_A
+{
+    
+    height: 100%;
+    width: 40%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+#B_container_B_3_B
+{
+    
+    height: 100%;
+    width: 40%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+#B_container_B_4
+{
+    height: 13%;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: end;
+
+}
+
+#B_container_B_4_a
+{
+    
+    height: 80%;
+    width: 30%;
+    outline: 1.5px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 400px;
+    font-size: 1.7vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    background-color: black;
+    color: white;
+    letter-spacing: 0.5vw;
+}
+
+#B_container_B_4_a:hover
+{
+ background-color: white;
+    color: black;
+}
+
+
+#B_container_B_5
+{
+    height: 39%;
+    width: 95%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    letter-spacing: 1px;
+    padding-top: 3%;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height:1.2;
+    font-size: 1.2vw;
+    margin-top: 2%;
+    margin-bottom: 2%;
+
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   C   ################################ */
+/* ######################################################################################### */
+
+
+#C
+{
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   scroll-margin-top: 15vh;
+}
+
+
+#C_container
+{
+   height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#C_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+
+
+
+
+
+#C_container_heading_box
+{
+    height: 20%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#C_container_inner_box
+{
+    height: 75%;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.C_container_inner_box_A
+{
+    height: 30%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+
+.C_container_inner_box_A_1
+{
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    border: 0px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 10px hsl(0deg 1% 1% / 1);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+
+}
+
+
+.C_container_inner_box_A_1:hover
+{
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0  white;
+    border: 2px solid white;
+    
+
+}
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   D   ################################ */
+/* ######################################################################################### */
+
+#D {
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;}
+
+#D_container {
+    height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#D_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+#D_container_heading_box {
+    height: 20%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#D_container_inner_box {
+    height: 75%;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.D_container_inner_box_A {
+    height: 30%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.D_container_inner_box_A_1 {
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+}
+
+
+.D_container_inner_box_A_1:hover
+{
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0  white;
+    border: 2px solid white;
+    
+
+}
+
+
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   E   ################################ */
+/* ######################################################################################### */
+
+#E {
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+}
+
+#E_container {
+  height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+     box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#E_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+#E_container_heading_box {
+    height: 20%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#E_container_inner_box {
+    height: 75%;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.E_container_inner_box_A {
+    height: 65%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.E_container_inner_box_A_1 {
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+}
+
+
+
+.E_container_inner_box_A_1:hover {
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0 white;
+    border: 2px solid white;
+}
+
+
+.E_container_inner_box_A_1_a
+{
+
+    height: 20%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5vw;
+    font-weight: 400;
+}
+
+.E_container_inner_box_A_1_b
+{
+
+    height: 10%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    margin-top: 2%;
+}
+
+.E_container_inner_box_A_1_c
+{
+
+    height: 10%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    margin-top: 2%;
+    font-size: 1vw;
+}
+
+.E_container_inner_box_A_1_d
+{
+
+    height: 30%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    margin-top: 2%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1vw;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   F   ################################ */
+/* ######################################################################################### */
+
+#F {
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+}
+
+#F_container {
+   height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#F_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+#F_container_heading_box {
+    height: 20%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#F_container_inner_box {
+    height: 75%;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.F_container_inner_box_A {
+    height: 65%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.F_container_inner_box_A_1 {
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+}
+
+.F_container_inner_box_A_1 img
+{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.F_container_inner_box_A_1:hover {
+    height: 99%;
+    width: 99%;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   H   ################################ */
+/* ######################################################################################### */
+
+#H {
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+}
+
+#H_container {
+    height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#H_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#H_container_heading_box {
+    height: 20%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#H_container_inner_box {
+    height: 75%;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.H_container_inner_box_A {
+    height: 30%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.H_container_inner_box_A_1 {
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.3vw;
+}
+
+.H_container_inner_box_A_1:hover {
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0 white;
+    border: 2px solid white;
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   I   ################################ */
+/* ######################################################################################### */
+
+#I {
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+}
+
+#I_container {
+   height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+   box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#I_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#I_container_heading_box {
+    height: 20%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#I_container_inner_box {
+    height: 75%;
+    width: 90%;
+    outline: 0px solid green;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+#I_container_inner_box_A {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+}
+
+
+#I_container_inner_box_A_1 {
+    height: 20%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    font-size: 3vh;
+}
+
+#I_container_inner_box_B {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+}
+#I_container_inner_box_B_1 {
+    height: 20%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    font-size: 3vh;
+
+}
+
+
+
+
+
+
+
+@media (max-width: 600px) {
+    body{}
+
+
+
+
+/* ################################################################################################################################################################################################ */
+/* ################################################################################## FOR MOBILE VIEWING   ####################################################################################### */
+/* ################################################################################################################################################################################################ */
+
+
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   A   ################################ */
+/* ######################################################################################### */
+
+
+#A {
+    width: 100%;
+    height: 10vh;
+    background-color: black;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    z-index: 10;
+    position: fixed;
+    
+}
+
+
+#A_1
+{
+    width: 85%;
+    height: 100%;
+    outline: 0px solid red;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
+
+
+#A_1 :hover
+{
+    color: black;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: 0.4s;
+}
+
+.A_1_a
+{
+    width: auto;
+    height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 0px solid red;
+    color: white;
+    font-size: 1.2vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    padding: 0.5%;
+}
+
+
+
+#A_2
+{
+    width: 35%;
+    height: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0%;
+    color: white;
+    font-size: 7vw;
+}
+
+#A_2_a
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#A_2_a:hover
+{
+    rotate: 90deg;
+    transition: 0.5s;
+}
+
+#A_2_b
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   B   ################################ */
+/* ######################################################################################### */
+
+#B
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10vh;
+    scroll-margin-top: 15vh;
+}
+
+#B_container
+{
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+
+      
+}
+
+#B_container_A
+{
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+}
+
+
+#B_container_A img
+{
+    height: 40vh;
+    width: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 40px;
+    margin: 2vh;
+}
+
+#B_container_B
+{
+    height: 100%;
+    width: 95%;
+    outline: 0px solid red;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+}
+
+#B_container_B_1
+{
+    height: auto;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10vw;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-top: 2vh;
+}
+
+#B_container_B_2
+{
+    height: auto;
+    margin-top: 1vh;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 6vw;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+
+#B_container_B_3
+{
+    height: auto;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    font-size: 4vw;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#B_container_B_3_A
+{
+    
+    height: 100%;
+     margin-top: 2vh;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+#B_container_B_3_B
+{
+    
+    height: 100%;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+     margin-top: 1.5vh;
+}
+
+#B_container_B_4
+{
+    height: 8vh;
+    width: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    margin-top: 2vh;
+
+}
+
+#B_container_B_4_a
+{
+    
+    height: 80%;
+    width: 70%;
+    outline: 1.5px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 400px;
+    font-size: 5vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+}
+
+#B_container_B_5
+{
+    height: auto;
+    width: 95%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    letter-spacing: 1px;
+    padding-top: 3%;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+    font-size: 4vw;
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   C   ################################ */
+/* ######################################################################################### */
+
+
+#C
+{
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+    margin-top: 6vh;
+}
+
+
+#C_container
+{
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+
+      
+}
+
+#C_container_heading_box
+{
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 3vh;
+}
+
+#C_container_inner_box
+{
+    height: auto;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    margin-top: 1vh;
+}
+
+.C_container_inner_box_A
+{
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+
+.C_container_inner_box_A_1
+{
+    height: 7vh;
+    width: 80%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 5vw;
+    margin: 1vh;
+
+}
+
+
+.C_container_inner_box_A_1:hover
+{
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0  white;
+    border: 2px solid white;
+    
+
+}
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   D   ################################ */
+/* ######################################################################################### */
+#D {
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+    margin-top: 6vh;
+}
+
+#D_container {
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+}
+
+#D_container_heading_box {
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 3vh;
+}
+
+#D_container_inner_box {
+    height: auto;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    margin-top: 1vh;
+}
+
+.D_container_inner_box_A {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.D_container_inner_box_A_1 {
+    height: 7vh;
+    width: 80%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 5vw;
+    margin: 1vh;
+}
+
+.D_container_inner_box_A_1:hover {
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0 white;
+    border: 2px solid white;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   E   ################################ */
+/* ######################################################################################### */
+
+#E {
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+     margin-top: 6vh;
+}
+
+#E_container {
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+}
+
+#E_container_heading_box {
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 3vh;
+}
+
+#E_container_inner_box {
+    height: auto;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.E_container_inner_box_A {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.E_container_inner_box_A_1 {
+    height: auto;
+    width: 90%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+    margin: 2vh;
+}
+
+
+
+.E_container_inner_box_A_1:hover {
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0 white;
+    border: 2px solid white;
+}
+
+
+.E_container_inner_box_A_1_a
+{
+
+    height: auto;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 5vw;
+    font-weight: 400;
+    margin-top: 2vh;
+}
+
+.E_container_inner_box_A_1_b
+{
+
+    height: auto;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    font-size: 3vw;
+    margin-top: 2vh;
+}
+
+.E_container_inner_box_A_1_c
+{
+
+    height: auto;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    font-size: 4vw;
+    margin-top: 2vh;
+}
+
+.E_container_inner_box_A_1_d
+{
+
+    height: 30%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+    margin-top: 2%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4vw;
+    margin: 2vh;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   F   ################################ */
+/* ######################################################################################### */
+
+#F {
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+     margin-top: 6vh;
+}
+
+#F_container {
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+}
+
+#F_container_heading_box {
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 3vh;
+}
+
+#F_container_inner_box {
+    height: auto;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.F_container_inner_box_A {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+     align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+}
+
+.F_container_inner_box_A_1 {
+    height: 30vh;
+    width: 90%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+     margin: 2vh;
+}
+
+.F_container_inner_box_A_1 img
+{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.F_container_inner_box_A_1:hover {
+    height: 99%;
+    width: 99%;
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   H   ################################ */
+/* ######################################################################################### */
+
+#H {
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+    margin-top: 6vh;
+    margin-bottom: 6vh;
+}
+
+#H_container {
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+}
+
+#H_container_heading_box {
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 3vh;
+}
+
+#H_container_inner_box {
+    height: auto;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.H_container_inner_box_A {
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-top: 3vh;
+}
+
+.H_container_inner_box_A_1 {
+    height: auto;
+    width: 100%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7vw;
+    margin: 1vh;
+    padding: 2vh;
+}
+
+.H_container_inner_box_A_1:hover {
+    color: white;
+    background-color: black;
+    box-shadow: 5px 5px 0 white;
+    border: 2px solid white;
+}
+
+
+
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   I   ################################ */
+/* ######################################################################################### */
+
+#I {
+    width: 100%;
+    height: 100vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+}
+
+#I_container {
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+}
+
+#I_container_heading_box {
+    height: 20vh;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 2vh;
+}
+
+#I_container_inner_box {
+    height: 75%;
+    width: 90%;
+    outline: 0px solid green;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+#I_container_inner_box_A {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+}
+
+
+#I_container_inner_box_A_1 {
+    height: 10vh;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+     font-size: 2vh;
+}
+
+#I_container_inner_box_B {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+}
+#I_container_inner_box_B_1 {
+    height: 10vh;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    outline: 0px solid red;
+     font-size: 2vh;
+
+}
+
+
+
+
+
+  }
+    </style>
+
+
+
+
+    
+
+
+
+</head>
+<body>
+    
+
+
+
+
+ <!--#########################################################################################--> 
+    <!--###########################  S E C T I O N   -  (minus_1)  ######################################--> 
+    <!--#########################################################################################--> 
+
+    <style>
+        #minus_1
+        {
+            width:100%;
+            height:100vh;
+            background-color:transparent;
+            z-index: -100;
+            position: fixed;
+        }
+    </style>
+
+    <section id="minus_1">
+           
+
+
+     </section>
+
+
+
+
+ <!--#########################################################################################--> 
+    <!--###########################  S E C T I O N   -  0  ######################################--> 
+    <!--#########################################################################################--> 
+
+    <section id="zero">
+            ⚠️ Optimized for Desktop Viewing
+     </section>
+
+
+
+
+    <!--#########################################################################################--> 
+    <!--###########################  S E C T I O N   -  A  ######################################--> 
+    <!--#########################################################################################--> 
+
+    <section id="A">
+        <div id="A_1">
+            <a href="#B" class="A_1_a">HOME</a>
+            <a href="#C" class="A_1_a">SKILLS</a>
+            <a href="#D" class="A_1_a">PROJECTS</a>
+            <a href="#E" class="A_1_a">ACHIEVEMENTS</a>
+            <a href="#F" class="A_1_a">CERTIFICATES</a>
+            <a href="#H" class="A_1_a">CONTACT</a>
+            <a href="#H" class="A_1_a">OTHER</a>
+        </div>
+        <div id="A_2">
+            <div id="A_2_a"><i class="fa fa-gear"></i></div>
+            <div id="A_2_b"><i class="fa fa-bars"></i></div>
+        </div> 
+    </section>
+
+
+
+    
+    <!--#########################################################################################--> 
+    <!--###########################  S E C T I O N   -  B  ######################################--> 
+    <!--#########################################################################################--> 
+
+    <section id="B">
+        <div id="B_container">
+            <div id="B_container_A">
+                <img src="rahul_pic-modified.png" alt="">
+            </div>
+            <div id="B_container_B">
+                <div id="B_container_B_1">RAHUL KUMAR</div>
+                <div id="B_container_B_2">JAVA DEVELOPER</div>
+                <div id="B_container_B_3">
+                    <div id="B_container_B_3_A"><i class="fa fa-envelope"></i> &nbsp; <a href="mailto:rahulxeel@gmail.com">rahulxeel@gmail.com</a></div>
+                    <div id="B_container_B_3_B"><i class="fa fa-phone"></i> &nbsp; <a href="tel:+91 6209466064">6209466064</a></div>
+                </div>
+                <div id="B_container_B_4">
+                    <a href="https://rahul.xeel.in/rahulxeel.pdf" id="B_container_B_4_a" target="_blank">Resume</a>
+                </div>
+                <div id="B_container_B_5">
+                
+                        Hi, I’m Rahul Kumar — a final-year B.Tech (CSE–IoT) student at MIET College, affiliated with AKTU (Batch: 2022–2026), and a passionate Java Developer.
+                        I specialize in backend development using Java and Spring Boot, and love building high-performance, scalable, and maintainable web applications. 
+                        With a strong foundation in computer science and hands-on experience across multiple projects, I’m constantly working to improve my coding standards, 
+                        explore advanced development tools, and stay job-ready for the ever-evolving tech landscape.Currently, I’m focused on full-stack Java development, API design, and deploying real-world 
+                        applications that solve real problems.
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    
+    
+    <!--#########################################################################################--> 
+    <!--###########################  S E C T I O N   -  C  ######################################--> 
+    <!--#########################################################################################--> 
+
+    <section id="C">
+        
+        <div id="C_container">
+          
+
+            <div id="C_container_heading_box">SKILLS :-</div>
+            
+            <div id="C_container_inner_box">
+
+                <div class="C_container_inner_box_A">
+                    <a class="C_container_inner_box_A_1" href="Skills/Javascript">JavaScript</a>
+                    <a class="C_container_inner_box_A_1" href="Skills/Javascript">PHP    </a>
+                    <a class="C_container_inner_box_A_1" href="Skills/Javascript">MySQL  </a>
+                    <a class="C_container_inner_box_A_1" href="Skills/Javascript">Java   </a>
+                    <a class="C_container_inner_box_A_1" href="Skills/Javascript">Python </a>
+                    <a class="C_container_inner_box_A_1" href="Skills/Javascript">React  </a>
+                </div>
+                
+                <div class="C_container_inner_box_A">
+                    <div class="C_container_inner_box_A_1">Git </div>
+                    <div class="C_container_inner_box_A_1">Linux </div>
+                    <div class="C_container_inner_box_A_1">Bash </div>
+                    <div class="C_container_inner_box_A_1">Firebase </div>
+                    <div class="C_container_inner_box_A_1">Bootstrap </div>
+                    <div class="C_container_inner_box_A_1">NodeJS </div>
+                </div>
+                
+                <div class="C_container_inner_box_A">
+                    <div class="C_container_inner_box_A_1">Express </div>
+                    <div class="C_container_inner_box_A_1">MongoDB </div>
+                    <div class="C_container_inner_box_A_1">Docker </div>
+                    <div class="C_container_inner_box_A_1">APIs </div>
+                    <div class="C_container_inner_box_A_1">JSON </div>
+                    <div class="C_container_inner_box_A_1">Tailwind </div>
+                </div>
+                
+                <div class="C_container_inner_box_A">
+                    <div class="C_container_inner_box_A_1">SEO </div>
+                    <div class="C_container_inner_box_A_1">Redux </div>
+                    <div class="C_container_inner_box_A_1">Postman </div>
+                    <div class="C_container_inner_box_A_1">BurpSuite </div>
+                    <div class="C_container_inner_box_A_1">Nmap </div>
+                    <div class="C_container_inner_box_A_1">Wireshark </div>
+                </div>
+                
+                <div class="C_container_inner_box_A">
+                    <div class="C_container_inner_box_A_1">Kali </div>
+                    <div class="C_container_inner_box_A_1">OWASP </div>
+                    <div class="C_container_inner_box_A_1">Scripting </div>
+                    <div class="C_container_inner_box_A_1">Hashing </div>
+                    <div class="C_container_inner_box_A_1">Encryption </div>
+                    <div class="C_container_inner_box_A_1">Debugging </div>
+                </div>
+                
+
+               
+            </div>
+
+        </div>
+
+    </section>
+
+    
+
+<!--#########################################################################################--> 
+<!--###########################  S E C T I O N   -  D  ######################################--> 
+<!--#########################################################################################--> 
+
+<section id="D">
+
+    <div id="D_container">
+
+        <div id="D_container_heading_box">PROJECTS :-</div>
+
+<div id="D_container_inner_box">
+
+    <div class="D_container_inner_box_A">
+        <div class="D_container_inner_box_A_1">E-Commerce </div>
+        <div class="D_container_inner_box_A_1">Blog System </div>
+        <div class="D_container_inner_box_A_1">Task Manager </div>
+        <div class="D_container_inner_box_A_1">Quiz App </div>
+        <div class="D_container_inner_box_A_1">Auth System </div>
+        <div class="D_container_inner_box_A_1">Finance Tracker </div>
+
+    </div>
+
+    <div class="D_container_inner_box_A">
+        <div class="D_container_inner_box_A_1">ToDo App </div>
+        <div class="D_container_inner_box_A_1">Chat App </div>
+        <div class="D_container_inner_box_A_1">Weather App </div>
+        <div class="D_container_inner_box_A_1">News Feed </div>
+        <div class="D_container_inner_box_A_1">Music Player </div>
+        <div class="D_container_inner_box_A_1">Game (2048) </div>
+    </div>
+
+    <div class="D_container_inner_box_A">
+        <div class="D_container_inner_box_A_1">Crypto Tracker </div>
+        <div class="D_container_inner_box_A_1">URL Shortener </div>
+        <div class="D_container_inner_box_A_1">Blog Editor </div>
+        <div class="D_container_inner_box_A_1">PDF Merger </div>
+        <div class="D_container_inner_box_A_1">Portfolio CMS </div>
+        <div class="D_container_inner_box_A_1">Bug Tracker </div>
+    </div>
+
+    <div class="D_container_inner_box_A">
+        <div class="D_container_inner_box_A_1">Resume Builder </div>
+        <div class="D_container_inner_box_A_1">Fitness Logger </div>
+        <div class="D_container_inner_box_A_1">Notes App </div>
+        <div class="D_container_inner_box_A_1">Image Gallery </div>
+        <div class="D_container_inner_box_A_1">Form Validator </div>
+        <div class="D_container_inner_box_A_1">Portfolio Site </div>
+
+    </div>
+
+</div>
+
+
+    </div>
+
+</section>
+
+    
+
+
+<!--#########################################################################################--> 
+<!--###########################  S E C T I O N   -  E  ######################################--> 
+<!--#########################################################################################--> 
+
+<section id="E">
+
+    <div id="E_container">
+
+        <div id="E_container_heading_box">ACHIEVEMENTS :-</div>
+
+        <div id="E_container_inner_box">
+
+            <!-- Row 1 -->
+            <div class="E_container_inner_box_A">
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Data Structures Training </div>
+                    <div class="E_container_inner_box_A_1_b">hitbullseye </div>
+                    <div class="E_container_inner_box_A_1_c">12 Jan 2025 </div>
+                    <div class="E_container_inner_box_A_1_d">Comprehensive training in problem-solving, algorithmic thinking, and efficient coding skills with C++. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Community Engagement </div>
+                    <div class="E_container_inner_box_A_1_b">NGO SABAL </div>
+                    <div class="E_container_inner_box_A_1_c">3 May 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Actively organizing seminars, blood donation camps, and food distribution drives to support community welfare initiatives. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Cloud Certification </div>
+                    <div class="E_container_inner_box_A_1_b">Microsoft Azure </div>
+                    <div class="E_container_inner_box_A_1_c">6 April 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Certified Cloud Administrator (Az-104), demonstrating expertise in cloud technologies. </div>
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="E_container_inner_box_A">
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Full Stack Bootcamp </div>
+                    <div class="E_container_inner_box_A_1_b">Udemy </div>
+                    <div class="E_container_inner_box_A_1_c">March 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Completed a hands-on project-based course covering MERN stack development with real-world applications. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">AI & ML Internship </div>
+                    <div class="E_container_inner_box_A_1_b">TechNova Pvt. Ltd. </div>
+                    <div class="E_container_inner_box_A_1_c">January 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Worked on Python-based machine learning models to analyze sales data and predict customer behavior. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Cybersecurity Workshop </div>
+                    <div class="E_container_inner_box_A_1_b">Ethical Hackers Club </div>
+                    <div class="E_container_inner_box_A_1_c">August 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Learned network security fundamentals, web app vulnerabilities, and ethical hacking techniques. </div>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="E_container_inner_box_A">
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Startup Pitch Finalist </div>
+                    <div class="E_container_inner_box_A_1_b">MIET Innovation Fest </div>
+                    <div class="E_container_inner_box_A_1_c">December 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Pitched a startup idea for a smart attendance system using facial recognition and IoT. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Top Performer Award </div>
+                    <div class="E_container_inner_box_A_1_b">CodeFiesta Hackathon </div>
+                    <div class="E_container_inner_box_A_1_c">October 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Led a 3-member team to build a functional prototype of a disaster alert app in 36 hours. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Python Automation Project </div>
+                    <div class="E_container_inner_box_A_1_b">Self-Led </div>
+                    <div class="E_container_inner_box_A_1_c">July 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Built a Python tool that automates Excel report generation using Pandas and OpenPyXL. </div>
+                </div>
+            </div>
+
+            <!-- Row 4  -->
+            <div class="E_container_inner_box_A">
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">UI/UX Design Certification </div>
+                    <div class="E_container_inner_box_A_1_b">Google UX Design </div>
+                    <div class="E_container_inner_box_A_1_c">May 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Gained hands-on experience in user research, wireframing, and prototyping with Figma and Adobe XD. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">Campus Tech Talk Speaker </div>
+                    <div class="E_container_inner_box_A_1_b">MIET Seminar Hall </div>
+                    <div class="E_container_inner_box_A_1_c">February 2025 </div>
+                    <div class="E_container_inner_box_A_1_d">Delivered a talk on "The Future of AI in Web Development" attended by over 100 students. </div>
+                </div>
+
+                <div class="E_container_inner_box_A_1">
+                    <div class="E_container_inner_box_A_1_a">DevOps Workshop Completion </div>
+                    <div class="E_container_inner_box_A_1_b">RedHat Academy </div>
+                    <div class="E_container_inner_box_A_1_c">November 2024 </div>
+                    <div class="E_container_inner_box_A_1_d">Learned CI/CD pipelines, Docker containerization, and Jenkins automation tools. </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!--#########################################################################################--> 
+<!--###########################  S E C T I O N   -  F  ######################################--> 
+<!--#########################################################################################--> 
+
+<section id="F">
+
+    <div id="F_container">
+
+        <div id="F_container_heading_box">CERTIFICATES :-</div>
+
+        <div id="F_container_inner_box">
+
+            <!-- Row 1 -->
+           
+
+            <!-- Row 2 -->
+            <div class="F_container_inner_box_A">
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/nsR88Vtc/0-XEEL.png"></img>
+                </div>
+
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/9kPbXqMg/1-XEEL.png"></img>
+                </div>
+
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/RTBzRjVx/2-XEEL.png"></img>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+
+            <div class="F_container_inner_box_A">
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/YTb20q1H/3-XEEL.png"></img>
+                </div>
+
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/jx4dgdH/5-XEEL.png"></img>
+                </div>
+
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/Wp6rj7YY/10-XEEL.png"></img>
+                </div>
+            </div>
+
+           <!-- ----- -->
+
+           <!-- Row 4 -->
+
+            <div class="F_container_inner_box_A">
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/PG4wZTrX/8-XEEL.png"></img>
+                </div>
+
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/dJfFHNhk/9-XEEL.png"></img>
+                </div>
+
+                <div class="F_container_inner_box_A_1">
+                    <img src="https://i.ibb.co/zhZjvM2w/6-XEEL.png"></img>
+                </div>
+            </div>
+
+
+               <!-- ----- -->
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!--#########################################################################################--> 
+<!--###########################  S E C T I O N   -  G  ######################################--> 
+<!--#########################################################################################--> 
+
+<section id="G">
+
+   
+
+</section>
+
+
+
+
+<!--#########################################################################################--> 
+<!--###########################  S E C T I O N   -  H  ######################################--> 
+<!--#########################################################################################--> 
+
+<section id="H">
+
+    <div id="H_container">
+
+        <div id="H_container_heading_box">SOCIAL HANDLES :-</div>
+
+        <div id="H_container_inner_box">
+
+            <div class="H_container_inner_box_A">
+                <a href="https://www.facebook.com/profile.php?id=100091746248549" target="_blank" class="H_container_inner_box_A_1"><i class="fa fa-facebook"></i></a>
+                <a href="https://www.instagram.com/rahulxeel" target="_blank" class="H_container_inner_box_A_1"><i class="fa fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/rahulxeel/" target="_blank" class="H_container_inner_box_A_1"><i class="fa fa-linkedin"></i></a>
+                <a href="https://github.com/rahulxeel" target="_blank" class="H_container_inner_box_A_1"><i class="fa fa-github"></i></a>
+            </div>
+            
+            <div class="H_container_inner_box_A">
+                <div class="H_container_inner_box_A_1"><i class="fa fa-whatsapp"></i></div>
+                <div class="H_container_inner_box_A_1"><i class="fa fa-pinterest"></i></div>
+                <div class="H_container_inner_box_A_1"><i class="fa fa-qq"></i></div>
+                <div class="H_container_inner_box_A_1"><i class="fa fa-wechat"></i></div>
+            </div>
+
+            <div class="H_container_inner_box_A">
+                <div class="H_container_inner_box_A_1"><i class="fa fa-reddit"></i></div>
+                <div class="H_container_inner_box_A_1"><i class="fa fa-tumblr"></i></div>
+                <div class="H_container_inner_box_A_1"><i class="fa fa-youtube"></i></div>
+                <div class="H_container_inner_box_A_1"><i class="fa fa-twitter"></i></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!--#########################################################################################--> 
+<!--###########################  S E C T I O N   -  I  ######################################--> 
+<!--#########################################################################################--> 
+
+<section id="I">
+
+    <div id="I_container">
+
+        <div id="I_container_heading_box">VISITORS DETAILS :-</div>
+
+        <div id="I_container_inner_box">
+
+            <div id="I_container_inner_box_A">
+                <div id="I_container_inner_box_A_1">IP :- &nbsp; &nbsp; <?php echo $visitor_ip; ?></div>
+                <div id="I_container_inner_box_A_1">City :- &nbsp; &nbsp; <?php echo $city; ?></div>
+                <div id="I_container_inner_box_A_1">Region :- &nbsp; &nbsp; <?php echo $region; ?></div>
+                <div id="I_container_inner_box_A_1">Browser :- &nbsp; &nbsp; <?php echo $browser; ?></div>
+            </div>
+            <div id="I_container_inner_box_B">
+                <div id="I_container_inner_box_B_1">ISP :- &nbsp; &nbsp; <?php echo $isp; ?></div>
+                <div id="I_container_inner_box_B_1">Device :- &nbsp; &nbsp; <?php echo $deviceType; ?></div>
+                <div id="I_container_inner_box_B_1">Total visitor :- &nbsp; &nbsp; <?php echo $count; ?></div>
+            </div>
+           
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+
+
+
+</body>
+</html>
