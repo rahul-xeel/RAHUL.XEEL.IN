@@ -440,10 +440,7 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     background-color: black;
     display: flex;
     justify-content: end;
-    align-items: center;
-    z-index: 10;
-    position: fixed;
-    
+    align-items: center;    
 }
 
 
@@ -539,8 +536,8 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10vh;
-    scroll-margin-top: 15vh;
+    margin-top: 12vh;
+    margin-bottom: 4vh;
 }
 
 #B_container
@@ -561,6 +558,238 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
 
 
 
+#B_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+
+
+#B_container_heading_box
+{
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 5vh;
+}
+
+#B_container_inner_box
+{
+    height: auto;
+    width: 86%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* ******************************************************* */
+
+#B_container_inner_box_A
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+   
+}
+
+#B_container_inner_box_A_1
+{
+    width: 100%;
+    height: 8vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    outline: 0px solid red;
+     margin-top: 5vh;
+}
+
+#B_container_inner_box_A_1_1
+{
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    box-sizing: border-box;
+    font-size: 4vw;
+}
+
+#B_container_inner_box_A_1_2
+{
+     width: 70%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#B_container_inner_box_A_1_2 input
+{
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+    background-color: #f0f8ff;
+    font-size: 4vw;
+}
+
+
+#B_container_inner_box_A_2
+{
+   width: 100%;
+   height: 8vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    outline: 0px solid red;
+ margin-top: 5vh;
+
+}
+
+#B_container_inner_box_A_2_1
+{
+     width: 30%;
+    height: 100%;
+   
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    box-sizing: border-box;
+     font-size: 4vw;
+}
+
+#B_container_inner_box_A_2_2
+{
+     width: 70%;
+    height: 100%;
+   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#B_container_inner_box_A_2_2 input
+{
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+    background-color: #f0f8ff;
+    font-size: 4vw;
+}
+
+
+
+/* ******************************************************* */
+
+
+
+#B_container_inner_box_B
+{
+   width: 100%;
+    height: 20vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    outline: 0px solid red;
+ margin-top: 5vh;
+}
+
+#B_container_inner_box_B_1
+{
+   
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4vw;
+}
+#B_container_inner_box_B_2
+{
+   
+    width: 70%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#B_container_inner_box_B_2 textarea
+{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background-color: #f0f8ff;
+  font-size: 4vw;
+}
+
+/* ******************************************************* */
+
+
+#B_container_inner_box_C
+{width: 100%;
+    height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 0px solid red;
+
+}
+
+
+#submit
+{
+    width: 80%;
+    height: 50%;
+   display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    color: white;
+    border-radius: 10px;
+    font-size: 4vw;
+}
+
+
+
+#submitted
+{
+    width: 20%;
+    height: 80%;
+   display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: green;
+    color: white;
+    border-radius: 10px;
+     font-size: 1vw;
+}
+
+
+
 
 /* ######################################################################################### */
 /* ################################# S E C T I O N  -   I   ################################ */
@@ -578,7 +807,7 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     align-items: center;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.5vw;
+    font-size: 3vw;
 }
 
 

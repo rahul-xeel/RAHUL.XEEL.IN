@@ -270,9 +270,6 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     display: flex;
     justify-content: end;
     align-items: center;
-    z-index: 10;
-    position: fixed;
-    
 }
 
 
@@ -367,8 +364,8 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    scroll-margin-top: 7vh;
-     margin-top: 6vh;
+     margin-top: 3vh;
+      margin-bottom: 3vh;
 }
 
 #F_container {
@@ -461,7 +458,7 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     align-items: center;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.5vw;
+    font-size: 3vw;
 }
 
 

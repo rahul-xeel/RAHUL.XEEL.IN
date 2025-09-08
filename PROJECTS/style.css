@@ -357,8 +357,9 @@ background-color: transparent;
 display: flex;
 justify-content: center;
 align-items: center;
-scroll-margin-top: 7vh;
-margin-top: 6vh;
+margin-top: 13vh;
+margin-bottom: 4vh;
+
 }
 
 #D_container {
@@ -449,7 +450,7 @@ justify-content: center;
 align-items: center;
 color: white;
 font-family: Arial, Helvetica, sans-serif;
-font-size: 1.5vw;
+font-size: 3vw;
 }
 
 

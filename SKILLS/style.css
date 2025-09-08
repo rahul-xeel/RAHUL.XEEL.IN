@@ -265,7 +265,11 @@ font-size: 1.3vw;
 
 
 @media (max-width: 600px) {
-    body{}
+    
+    body
+    {
+        /* display: block; */
+    }
 
 
 
@@ -281,10 +285,7 @@ font-size: 1.3vw;
     background-color: black;
     display: flex;
     justify-content: end;
-    align-items: center;
-    z-index: 10;
-    position: fixed;
-    
+    align-items: center;    
 }
 
 
@@ -383,8 +384,8 @@ font-size: 1.3vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    scroll-margin-top: 7vh;
-    margin-top: 6vh;
+    margin-top: 3vh;
+     margin-bottom: 3vh;
 }
 
 
@@ -408,8 +409,6 @@ font-size: 1.3vw;
     height: auto;
     width: 88%;
     outline: 0px solid red;
-    overflow-y: auto;
-    position: relative;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -425,8 +424,6 @@ font-size: 1.3vw;
     height: auto;
     width: 90%;
     outline: 0px solid red;
-    overflow-y: auto;
-    position: relative;
     margin-top: 1vh;
 }
 
@@ -440,7 +437,6 @@ font-size: 1.3vw;
     justify-content: center;
     outline: 0px solid red;
     margin-bottom: 1%;
-    position: relative;
 }
 
 
@@ -490,7 +486,7 @@ font-size: 1.3vw;
     align-items: center;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.5vw;
+    font-size: 3vw;
 }
 
 
