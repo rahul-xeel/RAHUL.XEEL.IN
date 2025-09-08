@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTACT</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="icon" type="image/x-icon" href="https://rahul.xeel.in/rahul_pic-modified.png" alt="rahulxeel - favicon">
+    <meta name="google-site-verification" content="MYDynxZ31OMY7B-V-W3xSHf3tHCggw6eBtjrzyPpbzE" />
+    <meta name="description"
+        content="Rahul Xeel – Final-year B.Tech CSE (IoT) student and Java developer. Explore Java, Spring Boot, full-stack projects, and certifications." />
+    <style>
+        .error { color: red; font-size: 0.9rem; }
+        .highlight { border: 2px solid red; }
+    </style>
+</head>
+
+<body>
+
+<section id="A">
+    <div id="A_1">
+        <a href="https://rahul.xeel.in/HOME" class="A_1_a">HOME</a>
+        <a href="https://rahul.xeel.in/SKILLS" class="A_1_a">SKILLS</a>
+        <a href="https://rahul.xeel.in/PROJECTS" class="A_1_a">PROJECTS</a>
+        <a href="https://rahul.xeel.in/ACHIEVEMENTS" class="A_1_a">ACHIEVEMENTS</a>
+        <a href="https://rahul.xeel.in/CERTIFICATES" class="A_1_a">CERTIFICATES</a>
+        <a href="https://rahul.xeel.in/SOCIAL" class="A_1_a">SOCIAL</a>
+        <a href="https://rahul.xeel.in/CONTACT" class="A_1_a">CONTACT</a>
+    </div>
+    <div id="A_2">
+        <div id="A_2_a"><i class="fa fa-gear"></i></div>
+        <div id="A_2_b"><i class="fa fa-bars"></i></div>
+    </div>
+</section>
+
+<form id="B">
+    <div id="B_container">
+        <div id="B_container_heading_box">CONTACT</div>
+        <div id="B_container_inner_box">
+            <div id="B_container_inner_box_A">
+                <div id="B_container_inner_box_A_1">
+                    <div id="B_container_inner_box_A_1_1">NAME :-</div>
+                    <div id="B_container_inner_box_A_1_2">
+                        <input id="name" type="text" placeholder="rahul kumar" required>
+                    </div>
+                </div>
+
+                <div id="B_container_inner_box_A_2">
+                    <div id="B_container_inner_box_A_2_1">EMAIL :-</div>
+                    <div id="B_container_inner_box_A_2_2">
+                        <input id="email" type="text" placeholder="emailid@gmail.com" type="email" required>
+                    </div>
+                </div>
+            </div>
+
+            <div id="B_container_inner_box_B">
+                <div id="B_container_inner_box_B_1">MSG :-</div>
+                <div id="B_container_inner_box_B_2">
+                    <textarea id="msg" placeholder="enter your message here" required></textarea>
+                </div>
+            </div>
+
+            <div id="B_container_inner_box_C">
+                <button id="submit">SUBMIT</button>
+                <div id="submitted" style="display:none;">Message Sent</div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<section id="I">
+    <h1 id="footer_content">RAHULXEEL rahulxeel RAHUL XEEL rahul xeel</h1>
+</section>
+
+<script>
+
+document.getElementById("B").addEventListener("submit", function(event) {
+    event.preventDefault(); // Stop form reload
+
+    let name  = document.getElementById('name');
+    let email = document.getElementById('email');
+    let msg   = document.getElementById('msg');
+    let submitBtn = document.getElementById('submit');
+    let submittedDiv = document.getElementById('submitted');
+
+
+    submitBtn.innerText = "Submitting...";
+
+    // AJAX GET request
+    let query = `name=${encodeURIComponent(name.value)}&email=${encodeURIComponent(email.value)}&msg=${encodeURIComponent(msg.value)}`;
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", `https://rahul-xeel-api.rf.gd/PORTFOLIO/CONTACT/send.php?${query}`, true);
+
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4) {
+            if(xhr.status === 200) {
+
+                submitBtn.style.display = "none";
+                submittedDiv.style.display = "flex";
+
+
+
+                setTimeout(function() {
+                    submitBtn.innerText = "Submit";
+                    submitBtn.style.display = "flex";
+                    submittedDiv.style.display = "none";
+                }, 3000);
+            } else {
+                alert("Error sending message! Status: " + xhr.status);
+                submitBtn.innerText = "Submit";
+            }
+        }
+    };
+
+    xhr.send();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+        *{
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+body
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+}
+
+
+
+
+/* ################################################################################################################################################################################################ */
+/* ################################################################################## FOR DESKTOP VIEWING   ####################################################################################### */
+/* ################################################################################################################################################################################################ */
+
+
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   A   ################################ */
+/* ######################################################################################### */
+
+
+#A {
+    width: 100%;
+    height: 12vh;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+
+#A_1
+{
+    width: 85%;
+    height: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 5%;
+    padding-left: 5vw;
+}
+
+
+#A_1 :hover
+{
+    color: black;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: 0.4s;
+}
+
+.A_1_a
+{
+    width: auto;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 0px solid red;
+    color: white;
+    font-size: 1.1vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    padding: 0.5%;
+}
+
+
+
+#A_2
+{
+    width: 15%;
+    height: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4%;
+    color: white;
+    font-size: 2vw;
+}
+
+#A_2_a
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#A_2_a:hover
+{
+    rotate: 90deg;
+    transition: 0.5s;
+}
+
+#A_2_b
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   F   ################################ */
+/* ######################################################################################### */
+
+#F {
+    width: 100%;
+    height: 88vh;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#F_container {
+   height: 85%;
+    width: 95%;
+    border: 0px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+#F_container:hover
+{
+
+box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
+      
+}
+
+
+#F_container_heading_box {
+    height: 15%;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 3vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+}
+
+#F_container_inner_box {
+    height: 85%;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.F_container_inner_box_A {
+    height: 65%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+    margin-bottom: 1%;
+    position: relative;
+}
+
+.F_container_inner_box_A_1 {
+    height: 90%;
+    width: 100%;
+    margin: 1%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+}
+
+.F_container_inner_box_A_1 img
+{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.F_container_inner_box_A_1:hover {
+    height: 99%;
+    width: 99%;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   I   ################################ */
+/* ######################################################################################### */
+
+
+
+
+#I {
+    width: 100%;
+    height: 10vh;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1vw;
+}
+
+
+
+
+
+
+
+/* ################################################################################################################################################################################################ */
+/* ################################################################################## FOR MOBILE VIEWING   ####################################################################################### */
+/* ################################################################################################################################################################################################ */
+
+
+
+
+
+@media (max-width: 600px) {
+    body{}
+
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   A   ################################ */
+/* ######################################################################################### */
+
+
+#A {
+    width: 100%;
+    height: 10vh;
+    background-color: black;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    z-index: 10;
+    position: fixed;
+    
+}
+
+
+#A_1
+{
+    width: 85%;
+    height: 100%;
+    outline: 0px solid red;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
+
+
+#A_1 :hover
+{
+    color: black;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: 0.4s;
+}
+
+.A_1_a
+{
+    width: auto;
+    height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 0px solid red;
+    color: white;
+    font-size: 1.2vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    padding: 0.5%;
+}
+
+
+
+#A_2
+{
+    width: 35%;
+    height: 100%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0%;
+    color: white;
+    font-size: 7vw;
+}
+
+#A_2_a
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#A_2_a:hover
+{
+    rotate: 90deg;
+    transition: 0.5s;
+}
+
+#A_2_b
+{
+    width: 40%;
+    height: 80%;
+    outline: 0px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   F   ################################ */
+/* ######################################################################################### */
+
+#F {
+    width: 100%;
+    height: auto;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-margin-top: 7vh;
+     margin-top: 6vh;
+}
+
+#F_container {
+    height: auto;
+    width: 90%;
+    border: 5px solid #000;
+    border-radius: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 0 #000;
+}
+
+#F_container_heading_box {
+    height: auto;
+    width: 88%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 7vw;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-left: 2%;
+    margin-top: 3vh;
+}
+
+#F_container_inner_box {
+    height: auto;
+    width: 90%;
+    outline: 0px solid red;
+    overflow-y: auto;
+    position: relative;
+}
+
+.F_container_inner_box_A {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+     align-items: center;
+    justify-content: center;
+    outline: 0px solid red;
+}
+
+.F_container_inner_box_A_1 {
+    height: 30vh;
+    width: 90%;
+    border: 2px solid #000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0 #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3vw;
+     margin: 2vh;
+}
+
+.F_container_inner_box_A_1 img
+{
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.F_container_inner_box_A_1:hover {
+    height: 99%;
+    width: 99%;
+}
+
+
+
+/* ######################################################################################### */
+/* ################################# S E C T I O N  -   I   ################################ */
+/* ######################################################################################### */
+
+
+
+
+#I {
+    width: 100%;
+    height: 10vh;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5vw;
+}
+
+
+
+  }
+   
