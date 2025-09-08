@@ -26,7 +26,6 @@ body
 
 
 
-
 /* ######################################################################################### */
 /* ################################# S E C T I O N  -   A   ################################ */
 /* ######################################################################################### */
@@ -39,8 +38,6 @@ body
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
-    position: fixed;
     
 }
 
@@ -58,14 +55,6 @@ body
 }
 
 
-#A_1 :hover
-{
-    color: black;
-    background-color: white;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: 0.4s;
-}
 
 .A_1_a
 {
@@ -103,24 +92,19 @@ body
     width: 40%;
     height: 80%;
     outline: 0px solid red;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
 }
 
 
-#A_2_a:hover
-{
-    rotate: 90deg;
-    transition: 0.5s;
-}
 
 #A_2_b
 {
     width: 40%;
     height: 80%;
     outline: 0px solid red;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
 }
