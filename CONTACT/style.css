@@ -429,6 +429,8 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
 
 
 
+
+
 /* ######################################################################################### */
 /* ################################# S E C T I O N  -   A   ################################ */
 /* ######################################################################################### */
@@ -440,7 +442,9 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
     background-color: black;
     display: flex;
     justify-content: end;
-    align-items: center;    
+    align-items: center;
+    position: fixed;
+    
 }
 
 
@@ -456,14 +460,6 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
 }
 
 
-#A_1 :hover
-{
-    color: black;
-    background-color: white;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: 0.4s;
-}
 
 .A_1_a
 {
@@ -507,21 +503,18 @@ box-shadow: 0 30px 30px hsl(0deg 1% 1% / 0.5);
 }
 
 
-#A_2_a:hover
-{
-    rotate: 90deg;
-    transition: 0.5s;
-}
-
 #A_2_b
 {
     width: 40%;
     height: 80%;
     outline: 0px solid red;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 600;
 }
+
 
 
 

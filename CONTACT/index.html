@@ -15,7 +15,6 @@
 
 <body>
 
-
     <!--#########################################################################################-->
     <!--###########################  S E C T I O N   -  A  ######################################-->
     <!--#########################################################################################-->
@@ -31,10 +30,90 @@
             <a href="https://rahul-xeel-api.rf.gd/PORTFOLIO/CONTACT/" class="A_1_a">CONTACT</a>
         </div>
         <div id="A_2">
-            <div id="A_2_a"><i class="fa fa-gear"></i></div>
-            <div id="A_2_b"><i class="fa fa-bars"></i></div>
+
+            <div id="A_2_a" onclick="menu_open()"><i class="fa fa-bars"></i></div>
+            <div id="A_2_b" onclick="menu_close()">X</div>
+
         </div>
     </section>
+
+
+    <!--#########################################################################################-->
+    <!--######################################  M  E  N  U  ######################################-->
+    <!--##########################################################################################-->
+
+
+    <style>
+        #menu {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            position: fixed;
+            margin-top: 10vh;
+            margin-left: 350%;
+            transition: 0.5s;
+            z-index: 99;
+        }
+
+        #menu_option {
+            width: 100%;
+            height: 10%;
+            font-size: 5vw;
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            padding-left: 10%;
+            gap: 5%;
+
+        }
+    </style>
+
+    <section id="menu">
+
+        <a id="menu_option" style="margin-top: 3vh;" href="https://rahul.xeel.in/HOME/">
+            <i class="fa fa-home"></i> HOME
+        </a>
+        <a id="menu_option" href="https://rahul.xeel.in/SKILLS/">
+            <i class="fa fa-code"></i> SKILLS
+        </a>
+        <a id="menu_option" href="https://rahul.xeel.in/PROJECTS/">
+            <i class="fa fa-folder"></i> PROJECTS
+        </a>
+        <a id="menu_option" href="https://rahul.xeel.in/ACHIEVEMENTS/">
+            <i class="fa fa-trophy"></i> ACHIEVEMENTS
+        </a>
+        <a id="menu_option" href="https://rahul.xeel.in/CERTIFICATES/">
+            <i class="fa fa-certificate"></i> CERTIFICATES
+        </a>
+        <a id="menu_option" href="https://rahul.xeel.in/SOCIAL/">
+            <i class="fa fa-globe"></i> SOCIAL
+        </a>
+        <a id="menu_option" href="https://rahul.xeel.in/CONTACT/">
+            <i class="fa fa-envelope"></i> CONTACT
+        </a>
+
+    </section>
+
+    <script>
+
+        function menu_open() {
+            document.getElementById('menu').style.marginLeft = "0%";
+            document.getElementById('A_2_b').style.display = "flex";
+            document.getElementById('A_2_a').style.display = "none";
+        }
+
+        function menu_close() {
+            document.getElementById('menu').style.marginLeft = "350%";
+            document.getElementById('A_2_b').style.display = "none";
+            document.getElementById('A_2_a').style.display = "flex";
+        }
+
+
+    </script>
+
 
 
 
