@@ -9,7 +9,48 @@
 
 <url>
   <loc>https://rahul.xeel.in/</loc>
-  <lastmod>2025-05-10T17:43:32+00:00</lastmod>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/HOME/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/SKILLS/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/PROJECTS/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/ACHIEVEMENTS/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/CERTIFICATES/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/SOCIAL/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/CONTACT/</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://rahul.xeel.in/rahulxeel.pdf</loc>
+  <lastmod>2025-09-08T12:00:13+00:00</lastmod>
+  <priority>0.80</priority>
 </url>
 
 
