@@ -1,189 +1,954 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME</title>
-    <link rel="stylesheet" href="style.css">
-    <SCript src="script.js" defer></SCript>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="icon" type="image/x-icon" href="https://rahul.xeel.in/rahul_pic-modified.png" alt="rahulxeel - favicon">
-    <meta name="google-site-verification" content="MYDynxZ31OMY7B-V-W3xSHf3tHCggw6eBtjrzyPpbzE" />
-    <meta name="description" content="Rahul Xeel – Final-year B.Tech CSE (IoT) student and Java developer. Explore Java, Spring Boot, full-stack projects, and certifications." />
-    <meta name="keywords" content="RahulXeel, Portfolio, Java Developer, Projects, Skills, Achievements">
-</head>
-
-<body>
-
-
-    <!--#########################################################################################-->
-    <!--###########################  S E C T I O N   -  A  ######################################-->
-    <!--#########################################################################################-->
-
-    <section id="A">
-        <div id="A_1">
-            <a href="https://rahul.xeel.in/HOME" class="A_1_a">HOME</a>
-            <a href="https://rahul.xeel.in/SKILLS" class="A_1_a">SKILLS</a>
-            <a href="https://rahul.xeel.in/PROJECTS" class="A_1_a">PROJECTS</a>
-            <a href="https://rahul.xeel.in/ACHIEVEMENTS" class="A_1_a">ACHIEVEMENTS</a>
-            <a href="https://rahul.xeel.in/CERTIFICATES" class="A_1_a">CERTIFICATES</a>
-            <a href="https://rahul.xeel.in/SOCIAL" class="A_1_a">SOCIAL</a>
-            <a href="https://rahul-xeel-api.rf.gd/PORTFOLIO/CONTACT/" class="A_1_a">CONTACT</a>
-        </div>
-        <div id="A_2">
-
-            <div id="A_2_a" onclick="menu_open()"><i class="fa fa-bars"></i></div>
-            <div id="A_2_b" onclick="menu_close()">X</div>
-
-        </div>
-    </section>
-
-
-    <!--#########################################################################################-->
-    <!--######################################  M  E  N  U  ######################################-->
-    <!--##########################################################################################-->
-
-
+    <title>Rahul Kumar - Java Developer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        #menu {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: white;
-            position: fixed;
-            margin-top: 10vh;
-            margin-left: 350%;
-            transition: 0.5s;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: gradientShift 8s ease-in-out infinite;
         }
-
-        #menu_option {
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            50% { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
+        }
+        .card-hover { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            height: 10%;
-            font-size: 5vw;
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            padding-left: 10%;
-            gap: 5%;
-
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .card-hover:hover::before {
+            left: 100%;
+        }
+        .card-hover:hover { 
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        .nav-link { 
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: #667eea;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        .nav-link:hover { color: #667eea; }
+        .active-page { color: #667eea; font-weight: 600; }
+        .active-page::after {
+            width: 100%;
+            left: 0;
+        }
+        .skill-tag { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .skill-tag:hover { 
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .project-card { 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .project-card:hover { 
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-effect {
+            overflow: hidden;
+            border-right: 3px solid white;
+            white-space: nowrap;
+            animation: typing 3s steps(20, end), blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: white }
+        }
+        .pulse-icon {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .progress-bar {
+            width: 0%;
+            transition: width 2s ease-in-out;
+        }
+        .skill-progress {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 6px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .achievement-card {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .achievement-card:hover {
+            border-left-color: #667eea;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), transparent);
+        }
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+        .contact-form {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
         }
     </style>
-
-    <section id="menu">
-
-        <a id="menu_option" style="margin-top: 3vh;" href="https://rahul.xeel.in/HOME/">
-            <i class="fa fa-home"></i> HOME
-        </a>
-        <a id="menu_option" href="https://rahul.xeel.in/SKILLS/">
-            <i class="fa fa-code"></i> SKILLS
-        </a>
-        <a id="menu_option" href="https://rahul.xeel.in/PROJECTS/">
-            <i class="fa fa-folder"></i> PROJECTS
-        </a>
-        <a id="menu_option" href="https://rahul.xeel.in/ACHIEVEMENTS/">
-            <i class="fa fa-trophy"></i> ACHIEVEMENTS
-        </a>
-        <a id="menu_option" href="https://rahul.xeel.in/CERTIFICATES/">
-            <i class="fa fa-certificate"></i> CERTIFICATES
-        </a>
-        <a id="menu_option" href="https://rahul.xeel.in/SOCIAL/">
-            <i class="fa fa-globe"></i> SOCIAL
-        </a>
-        <a id="menu_option" href="https://rahul-xeel-api.rf.gd/PORTFOLIO/CONTACT/">
-            <i class="fa fa-envelope"></i> CONTACT
-        </a>
-
-    </section>
-
-    <script>
-
-        function menu_open() {
-            document.getElementById('menu').style.marginLeft = "0%";
-            document.getElementById('A_2_b').style.display = "flex";
-            document.getElementById('A_2_a').style.display = "none";
-        }
-
-        function menu_close() {
-            document.getElementById('menu').style.marginLeft = "350%";
-            document.getElementById('A_2_b').style.display = "none";
-            document.getElementById('A_2_a').style.display = "flex";
-        }
-
-
-    </script>
-
-
-
-    <!--#########################################################################################-->
-    <!--###########################  S E C T I O N   -  B  ######################################-->
-    <!--#########################################################################################-->
-
-
-    <section id="B">
-        <div id="B_container">
-            <div id="B_container_A">
-                <img src="https://rahul.xeel.in/rahul_pic-modified.png" alt="rahulxeel">
-            </div>
-            <div id="B_container_B">
-                <div id="B_container_B_1">RAHUL KUMAR</div>
-                <div id="B_container_B_2">JAVA DEVELOPER</div>
-                <div id="B_container_B_3">
-                    <div id="B_container_B_3_A"><i class="fa fa-envelope"></i> &nbsp; <a
-                            href="mailto:rahulxeel@gmail.com">rahulxeel@gmail.com</a></div>
-                    <div id="B_container_B_3_B"><i class="fa fa-phone"></i> &nbsp; <a
-                            href="tel:+91 6209466064">6209466064</a></div>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-gray-800">rahulxeel</h1>
                 </div>
-                <div id="B_container_B_4">
-                    <a href="https://rahul.xeel.in/RESUME.pdf" id="B_container_B_4_a" target="_blank">Resume</a>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#" class="nav-link active-page" onclick="showPage('home')">HOME</a>
+                        <a href="#" class="nav-link text-gray-600" onclick="showPage('skills')">SKILLS</a>
+                        <a href="#" class="nav-link text-gray-600" onclick="showPage('projects')">PROJECTS</a>
+                        <a href="#" class="nav-link text-gray-600" onclick="showPage('achievements')">ACHIEVEMENTS</a>
+                        <a href="#" class="nav-link text-gray-600" onclick="showPage('certificates')">CERTIFICATES</a>
+                        <a href="#" class="nav-link text-gray-600" onclick="showPage('social')">SOCIAL</a>
+                        <a href="#" class="nav-link text-gray-600" onclick="showPage('contact')">CONTACT</a>
+                    </div>
                 </div>
-                <div id="B_container_B_5">
-
-                    Hi, I’m Rahul Kumar — a final-year B.Tech (CSE–IoT) student at MIET College, affiliated with AKTU
-                    (Batch: 2022–2026), and a passionate Java Developer.
-                    I specialize in backend development using Java and Spring Boot, and love building high-performance,
-                    scalable, and maintainable web applications.
-                    With a strong foundation in computer science and hands-on experience across multiple projects, I’m
-                    constantly working to improve my coding standards,
-                    explore advanced development tools, and stay job-ready for the ever-evolving tech
-                    landscape.Currently, I’m focused on full-stack Java development, API design, and deploying
-                    real-world
-                    applications that solve real problems.
-
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="nav-link block px-3 py-2 active-page" onclick="showPage('home'); toggleMobileMenu()">HOME</a>
+                <a href="#" class="nav-link block px-3 py-2 text-gray-600" onclick="showPage('skills'); toggleMobileMenu()">SKILLS</a>
+                <a href="#" class="nav-link block px-3 py-2 text-gray-600" onclick="showPage('projects'); toggleMobileMenu()">PROJECTS</a>
+                <a href="#" class="nav-link block px-3 py-2 text-gray-600" onclick="showPage('achievements'); toggleMobileMenu()">ACHIEVEMENTS</a>
+                <a href="#" class="nav-link block px-3 py-2 text-gray-600" onclick="showPage('certificates'); toggleMobileMenu()">CERTIFICATES</a>
+                <a href="#" class="nav-link block px-3 py-2 text-gray-600" onclick="showPage('social'); toggleMobileMenu()">SOCIAL</a>
+                <a href="#" class="nav-link block px-3 py-2 text-gray-600" onclick="showPage('contact'); toggleMobileMenu()">CONTACT</a>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- HOME PAGE -->
+        <div id="home-page" class="page">
+            <div class="gradient-bg min-h-screen flex items-center">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                    <div class="text-center text-white">
+                        <div class="mb-8">
+                            <div class="w-32 h-32 bg-white rounded-full mx-auto mb-6 flex items-center justify-center floating">
+                                <i class="fas fa-user text-6xl text-gray-600 pulse-icon"></i>
+                            </div>
+                            <h1 class="text-5xl md:text-6xl font-bold mb-4 fade-in">RAHUL KUMAR</h1>
+                            <p class="text-2xl md:text-3xl font-light mb-6 typing-effect">JAVA DEVELOPER</p>
+                            <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-8 mb-8">
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    <span>rahulxeel@gmail.com</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    <span>6209466064</span>
+                                </div>
+                            </div>
+                            <button class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition duration-300">
+                                <i class="fas fa-download mr-2"></i>Resume
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white py-20">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-gray-800 mb-8">About Me</h2>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            Hi, I'm Rahul Kumar — a final-year B.Tech (CSE–IoT) student at MIET College, affiliated with AKTU (Batch: 2022–2026), and a passionate Java Developer. I specialize in backend development using Java and Spring Boot, and love building high-performance, scalable, and maintainable web applications. With a strong foundation in computer science and hands-on experience across multiple projects, I'm constantly working to improve my coding standards, explore advanced development tools, and stay job-ready for the ever-evolving tech landscape. Currently, I'm focused on full-stack Java development, API design, and deploying real-world applications that solve real problems.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- SKILLS PAGE -->
+        <div id="skills-page" class="page hidden">
+            <div class="min-h-screen bg-gray-50 py-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">SKILLS</h1>
+                        <p class="text-xl text-gray-600">Technologies and tools I work with</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-js-square text-3xl text-yellow-500 mb-2"></i>
+                            <p class="font-semibold mb-2">JavaScript</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="skill-progress progress-bar" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-php text-3xl text-purple-600 mb-2"></i>
+                            <p class="font-semibold mb-2">PHP</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="skill-progress progress-bar" data-width="75"></div>
+                            </div>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-database text-3xl text-blue-600 mb-2"></i>
+                            <p class="font-semibold mb-2">MySQL</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="skill-progress progress-bar" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-java text-3xl text-red-600 mb-2"></i>
+                            <p class="font-semibold mb-2">Java</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="skill-progress progress-bar" data-width="95"></div>
+                            </div>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-python text-3xl text-blue-500 mb-2"></i>
+                            <p class="font-semibold mb-2">Python</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="skill-progress progress-bar" data-width="80"></div>
+                            </div>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-react text-3xl text-cyan-500 mb-2"></i>
+                            <p class="font-semibold mb-2">React</p>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="skill-progress progress-bar" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-git-alt text-3xl text-orange-600 mb-2"></i>
+                            <p class="font-semibold">Git</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-linux text-3xl text-black mb-2"></i>
+                            <p class="font-semibold">Linux</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-terminal text-3xl text-green-600 mb-2"></i>
+                            <p class="font-semibold">Bash</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-fire text-3xl text-orange-500 mb-2"></i>
+                            <p class="font-semibold">Firebase</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-bootstrap text-3xl text-purple-600 mb-2"></i>
+                            <p class="font-semibold">Bootstrap</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-node-js text-3xl text-green-600 mb-2"></i>
+                            <p class="font-semibold">NodeJS</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-server text-3xl text-gray-600 mb-2"></i>
+                            <p class="font-semibold">Express</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-leaf text-3xl text-green-500 mb-2"></i>
+                            <p class="font-semibold">MongoDB</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-docker text-3xl text-blue-500 mb-2"></i>
+                            <p class="font-semibold">Docker</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-plug text-3xl text-indigo-600 mb-2"></i>
+                            <p class="font-semibold">APIs</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-code text-3xl text-yellow-600 mb-2"></i>
+                            <p class="font-semibold">JSON</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-wind text-3xl text-cyan-500 mb-2"></i>
+                            <p class="font-semibold">Tailwind</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-search text-3xl text-green-600 mb-2"></i>
+                            <p class="font-semibold">SEO</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fab fa-redux text-3xl text-purple-600 mb-2"></i>
+                            <p class="font-semibold">Redux</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-mail-bulk text-3xl text-orange-600 mb-2"></i>
+                            <p class="font-semibold">Postman</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-shield-alt text-3xl text-red-600 mb-2"></i>
+                            <p class="font-semibold">BurpSuite</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-network-wired text-3xl text-blue-600 mb-2"></i>
+                            <p class="font-semibold">Nmap</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-eye text-3xl text-blue-500 mb-2"></i>
+                            <p class="font-semibold">Wireshark</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-dragon text-3xl text-black mb-2"></i>
+                            <p class="font-semibold">Kali</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-lock text-3xl text-red-500 mb-2"></i>
+                            <p class="font-semibold">OWASP</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-scroll text-3xl text-gray-600 mb-2"></i>
+                            <p class="font-semibold">Scripting</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-hashtag text-3xl text-purple-600 mb-2"></i>
+                            <p class="font-semibold">Hashing</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-key text-3xl text-yellow-600 mb-2"></i>
+                            <p class="font-semibold">Encryption</p>
+                        </div>
+                        <div class="skill-tag bg-white p-4 rounded-lg shadow-md text-center card-hover">
+                            <i class="fas fa-bug text-3xl text-red-500 mb-2"></i>
+                            <p class="font-semibold">Debugging</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- PROJECTS PAGE -->
+        <div id="projects-page" class="page hidden">
+            <div class="min-h-screen bg-gray-50 py-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">PROJECTS</h1>
+                        <p class="text-xl text-gray-600">A showcase of my development work</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-gamepad text-4xl text-green-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Snake Game</h3>
+                            </div>
+                            <p class="text-gray-600">Classic snake game built with JavaScript and HTML5 Canvas</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-times text-4xl text-blue-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Tic Tac Toe</h3>
+                            </div>
+                            <p class="text-gray-600">Interactive tic-tac-toe game with AI opponent</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-users text-4xl text-purple-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">User Management</h3>
+                            </div>
+                            <p class="text-gray-600">Full CRUD application for managing user data</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-vial text-4xl text-orange-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">API Request Testing</h3>
+                            </div>
+                            <p class="text-gray-600">Tool for testing and debugging REST APIs</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-chart-line text-4xl text-green-600 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Finance Tracker</h3>
+                            </div>
+                            <p class="text-gray-600">Personal finance management application</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-question-circle text-4xl text-indigo-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Quiz App</h3>
+                            </div>
+                            <p class="text-gray-600">Interactive quiz application with scoring system</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-shopping-cart text-4xl text-red-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">E-Commerce</h3>
+                            </div>
+                            <p class="text-gray-600">Full-featured online shopping platform</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-blog text-4xl text-cyan-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Blog System</h3>
+                            </div>
+                            <p class="text-gray-600">Content management system for blogging</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-tasks text-4xl text-yellow-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Task Manager</h3>
+                            </div>
+                            <p class="text-gray-600">Productivity app for managing daily tasks</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-lock text-4xl text-gray-600 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Auth System</h3>
+                            </div>
+                            <p class="text-gray-600">Secure authentication and authorization system</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-check-square text-4xl text-green-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">ToDo App</h3>
+                            </div>
+                            <p class="text-gray-600">Simple and elegant task tracking application</p>
+                        </div>
+                        <div class="project-card bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-comments text-4xl text-blue-500 mb-3"></i>
+                                <h3 class="text-xl font-bold text-gray-800">Chat App</h3>
+                            </div>
+                            <p class="text-gray-600">Real-time messaging application</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- ACHIEVEMENTS PAGE -->
+        <div id="achievements-page" class="page hidden">
+            <div class="min-h-screen bg-gray-50 py-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">ACHIEVEMENTS</h1>
+                        <p class="text-xl text-gray-600">Milestones and accomplishments in my journey</p>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover achievement-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center pulse-icon">
+                                        <i class="fas fa-code text-blue-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Data Structures Training</h3>
+                                    <p class="text-sm text-gray-500 mb-2">hitbullseye • 12 Jan 2025</p>
+                                    <p class="text-gray-600">Comprehensive training in problem-solving, algorithmic thinking, and efficient coding skills with C++.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-heart text-green-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Community Engagement</h3>
+                                    <p class="text-sm text-gray-500 mb-2">NGO SABAL • 3 May 2024</p>
+                                    <p class="text-gray-600">Actively organizing seminars, blood donation camps, and food distribution drives to support community welfare initiatives.</p>
+                                </div>
+                            </div>
+                        </div>
 
-    <!--#########################################################################################-->
-    <!--###########################  S E C T I O N   -  I  ######################################-->
-    <!--#########################################################################################-->
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-cloud text-blue-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Cloud Certification</h3>
+                                    <p class="text-sm text-gray-500 mb-2">Microsoft Azure • 6 April 2024</p>
+                                    <p class="text-gray-600">Certified Cloud Administrator (Az-104), demonstrating expertise in cloud technologies.</p>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-laptop-code text-purple-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Full Stack Bootcamp</h3>
+                                    <p class="text-sm text-gray-500 mb-2">Udemy • March 2024</p>
+                                    <p class="text-gray-600">Completed a hands-on project-based course covering MERN stack development with real-world applications.</p>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- FOOTER -->
-    <section id="I">
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-robot text-orange-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">AI & ML Internship</h3>
+                                    <p class="text-sm text-gray-500 mb-2">TechNova Pvt. Ltd. • January 2024</p>
+                                    <p class="text-gray-600">Worked on Python-based machine learning models to analyze sales data and predict customer behavior.</p>
+                                </div>
+                            </div>
+                        </div>
 
-        <h1 id="footer_content">RAHULXEEL rahulxeel RAHUL XEEL rahul xeel</h1>
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-shield-alt text-red-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Cybersecurity Workshop</h3>
+                                    <p class="text-sm text-gray-500 mb-2">Ethical Hackers Club • August 2024</p>
+                                    <p class="text-gray-600">Learned network security fundamentals, web app vulnerabilities, and ethical hacking techniques.</p>
+                                </div>
+                            </div>
+                        </div>
 
-    </section>
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-trophy text-yellow-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2">Top Performer Award</h3>
+                                    <p class="text-sm text-gray-500 mb-2">CodeFiesta Hackathon • October 2024</p>
+                                    <p class="text-gray-600">Led a 3-member team to build a functional prototype of a disaster alert app in 36 hours.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- CERTIFICATES PAGE -->
+        <div id="certificates-page" class="page hidden">
+            <div class="min-h-screen bg-gray-50 py-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">CERTIFICATES</h1>
+                        <p class="text-xl text-gray-600">Professional certifications and credentials</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-certificate text-4xl text-blue-500 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Microsoft Azure Az-104</h3>
+                                <p class="text-gray-600 mb-4">Cloud Administrator Certification</p>
+                                <span class="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">2024</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-certificate text-4xl text-green-500 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Full Stack Development</h3>
+                                <p class="text-gray-600 mb-4">MERN Stack Bootcamp</p>
+                                <span class="inline-block bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">2024</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-certificate text-4xl text-purple-500 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Google UX Design</h3>
+                                <p class="text-gray-600 mb-4">User Experience Design Certificate</p>
+                                <span class="inline-block bg-purple-100 text-purple-800 text-sm px-3 py-1 rounded-full">2024</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-certificate text-4xl text-red-500 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">RedHat DevOps</h3>
+                                <p class="text-gray-600 mb-4">CI/CD and Container Technologies</p>
+                                <span class="inline-block bg-red-100 text-red-800 text-sm px-3 py-1 rounded-full">2024</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-certificate text-4xl text-yellow-500 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Data Structures & Algorithms</h3>
+                                <p class="text-gray-600 mb-4">Advanced Problem Solving</p>
+                                <span class="inline-block bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full">2025</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-certificate text-4xl text-indigo-500 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Cybersecurity Fundamentals</h3>
+                                <p class="text-gray-600 mb-4">Ethical Hacking & Security</p>
+                                <span class="inline-block bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full">2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOCIAL PAGE -->
+        <div id="social-page" class="page hidden">
+            <div class="min-h-screen bg-gray-50 py-20">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">SOCIAL</h1>
+                        <p class="text-xl text-gray-600">Connect with me on social platforms</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="text-center">
+                                <i class="fab fa-linkedin text-6xl text-blue-600 mb-4 social-icon"></i>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">LinkedIn</h3>
+                                <p class="text-gray-600 mb-4">Professional networking and career updates</p>
+                                <button class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300 hover:scale-105">
+                                    Connect
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="text-center">
+                                <i class="fab fa-github text-6xl text-gray-800 mb-4 social-icon"></i>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">GitHub</h3>
+                                <p class="text-gray-600 mb-4">Open source projects and code repositories</p>
+                                <button class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-900 transition duration-300 hover:scale-105">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="text-center">
+                                <i class="fab fa-twitter text-6xl text-blue-400 mb-4 social-icon"></i>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">Twitter</h3>
+                                <p class="text-gray-600 mb-4">Tech insights and daily thoughts</p>
+                                <button class="bg-blue-400 text-white px-6 py-2 rounded-full hover:bg-blue-500 transition duration-300 hover:scale-105">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-8 card-hover">
+                            <div class="text-center">
+                                <i class="fab fa-instagram text-6xl text-pink-500 mb-4 social-icon"></i>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">Instagram</h3>
+                                <p class="text-gray-600 mb-4">Behind the scenes and personal moments</p>
+                                <button class="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition duration-300 hover:scale-105">
+                                    Follow
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contact-page" class="page hidden">
+            <div class="min-h-screen bg-gray-50 py-20">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-5xl font-bold text-gray-800 mb-4">CONTACT</h1>
+                        <p class="text-xl text-gray-600">Let's get in touch and discuss opportunities</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-6">Get In Touch</h2>
+                            <div class="space-y-6">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-envelope text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Email</h3>
+                                        <p class="text-gray-600">rahulxeel@gmail.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-phone text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Phone</h3>
+                                        <p class="text-gray-600">6209466064</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-map-marker-alt text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800">Location</h3>
+                                        <p class="text-gray-600">MIET College, AKTU</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="contact-form rounded-lg shadow-lg p-8">
+                                <h2 class="text-2xl font-bold text-gray-800 mb-6">Send Message</h2>
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-info-circle text-yellow-600 mr-2"></i>
+                                        <span class="text-yellow-800 text-sm font-medium">Demo Form</span>
+                                    </div>
+                                    <p class="text-yellow-700 text-sm mt-1">This is a sample contact form for portfolio demonstration.</p>
+                                </div>
+                                <form class="space-y-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Your Name">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                        <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="your.email@example.com">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Message Subject">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Your message here..."></textarea>
+                                    </div>
+                                    <button type="button" onclick="showDemoAlert()" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300">
+                                        Send Message
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>© 2025 | Made with ❤️ by Rahulxeel</p>
+        </div>
+    </footer>
 
     <script>
+        function showPage(pageName) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.add('hidden'));
+            
+            // Show selected page
+            document.getElementById(pageName + '-page').classList.remove('hidden');
+            
+            // Update navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active-page');
+                link.classList.add('text-gray-600');
+            });
+            
+            // Set active link
+            event.target.classList.add('active-page');
+            event.target.classList.remove('text-gray-600');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // Animate skill progress bars if on skills page
+            if (pageName === 'skills') {
+                setTimeout(() => {
+                    animateSkillBars();
+                }, 300);
+            }
+        }
 
-        // ONCLICK BARS 
+        function animateSkillBars() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.getAttribute('data-width');
+                bar.style.width = width + '%';
+            });
+        }
 
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
 
+        function showDemoAlert() {
+            // Create custom alert with animation
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            alertDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>Demo message sent successfully! 🚀</span>
+                </div>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Animate in
+            setTimeout(() => {
+                alertDiv.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                alertDiv.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(alertDiv);
+                }, 300);
+            }, 3000);
+        }
 
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuButton = event.target.closest('button');
+            
+            if (!mobileMenu.contains(event.target) && !menuButton) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+
+        // Add click effects to project cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectCards = document.querySelectorAll('.project-card');
+            projectCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add ripple effect
+                    const ripple = document.createElement('div');
+                    ripple.className = 'absolute inset-0 bg-white opacity-20 rounded-lg animate-ping';
+                    this.style.position = 'relative';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        this.removeChild(ripple);
+                    }, 600);
+                });
+            });
+
+            // Add hover sound effect simulation
+            const skillTags = document.querySelectorAll('.skill-tag');
+            skillTags.forEach(tag => {
+                tag.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1) rotate(2deg)';
+                });
+                tag.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+
+            // Animate elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all cards
+            document.querySelectorAll('.card-hover').forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Add typing effect restart on home page visit
+        function restartTypingEffect() {
+            const typingElement = document.querySelector('.typing-effect');
+            if (typingElement) {
+                typingElement.style.animation = 'none';
+                setTimeout(() => {
+                    typingElement.style.animation = 'typing 3s steps(20, end), blink-caret 0.75s step-end infinite';
+                }, 10);
+            }
+        }
+
+        // Enhanced page switching with typing effect restart
+        const originalShowPage = showPage;
+        showPage = function(pageName) {
+            originalShowPage(pageName);
+            if (pageName === 'home') {
+                setTimeout(restartTypingEffect, 100);
+            }
+        };
     </script>
-
-
-
-</body>
-
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fe8c3a44c03e16',t:'MTc1ODAwNjY2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
